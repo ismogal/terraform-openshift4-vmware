@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wh-acd-nfs-file-store-pv
+  selfLink: /api/v1/persistentvolumes/ibm-wh-acd-file-store-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  nfs:
+    path: /mnt/nfs_shares/acd
+    server: 10.14.120.1
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem

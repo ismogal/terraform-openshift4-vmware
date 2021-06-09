@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: registry-pv
+  namespace: openshift-image-registry
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 20Gi
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /mnt/nfs_shares/image_reg
+    server: 10.14.120.1

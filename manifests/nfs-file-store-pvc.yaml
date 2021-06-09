@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wh-acd-nfs-file-store-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
+  volumeName: wh-acd-nfs-file-store-pv
