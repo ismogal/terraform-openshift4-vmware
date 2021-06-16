@@ -8,6 +8,16 @@ sudo yum install -y terraform
 sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 sudo yum install -y jq
 sudo yum install -y wget
+
+# extract govc binary to /usr/local/bin
+# note: the "tar" command must run with root permissions
+sudo su 
+curl -L -o - "https://github.com/vmware/govmomi/releases/latest/download/govc_$(uname -s)_$(uname -m).tar.gz" | tar -C /usr/local/bin -xvzf - govc
+
+# extract oc binary to /usr/local/bin
+sudo su
+curl -L -o - "https://mirror.openshift.com/pub/openshift-v4/$(uname -m)/clients/ocp/latest/openshift-client-linux.tar.gz" | tar -C /usr/local/bin -xvzf - oc
+
 ```
 ## OpenShift 4.7 User-Provided Infrastructure
 Follow the Installation process from the main README.md
