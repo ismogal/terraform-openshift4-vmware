@@ -5,10 +5,10 @@
 
 locals {
   cluster_domain      = "${var.cluster_id}.${var.base_domain}"
-  bootstrap_fqdns     = ["bootstrap-0.${local.cluster_domain}"]
-  control_plane_fqdns = [for idx in range(var.control_plane_count) : "control-plane-${idx}.${local.cluster_domain}"]
-  compute_fqdns       = [for idx in range(var.compute_count) : "compute-${idx}.${local.cluster_domain}"]
-  storage_fqdns       = [for idx in range(var.storage_count) : "storage-${idx}.${local.cluster_domain}"]
+  bootstrap_fqdns     = ["${var.bootstrap_name}.${local.cluster_domain}"]
+  control_plane_fqdns = [for idx in range(var.control_plane_count) : "${var.control_plane_name}0${idx+1}.${local.cluster_domain}"]
+  compute_fqdns       = [for idx in range(var.compute_count) : "${var.compute_name}0${idx+1}.${local.cluster_domain}"]
+  storage_fqdns       = [for idx in range(var.storage_count) : "${var.storage_name}0${idx+1}.${local.cluster_domain}"]
   ssh_public_key      = var.ssh_public_key == "" ? chomp(tls_private_key.installkey[0].public_key_openssh) : chomp(file(pathexpand(var.ssh_public_key)))
   folder_path         = var.vsphere_folder == "" ? var.cluster_id : var.vsphere_folder
   resource_pool_id    = var.vsphere_preexisting_resourcepool ? data.vsphere_resource_pool.resource_pool[0].id : vsphere_resource_pool.resource_pool[0].id

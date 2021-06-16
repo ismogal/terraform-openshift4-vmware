@@ -9,7 +9,7 @@ sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 
 sudo yum install -y jq
 sudo yum install -y wget
 ```
-## OpenShift 4.6 User-Provided Infrastructure
+## OpenShift 4.7 User-Provided Infrastructure
 Follow the Installation process from the main README.md
 
 The terraform.tfvars has been update to close to TH variables
@@ -51,10 +51,10 @@ There are number of steps required to be done after the cluster has been sucessf
         TH will create mount point for /registry and /acd and exports.
         
         Create PV with required size and create PVC (it will bound automatically when the size is same)
-    ```
-    oc create -f manifests/nfs-file-store-pv.yaml
-    oc create -f manifests/nfs-file-store-pvc.yaml
-    ```
+        ```
+        oc create -f manifests/nfs-file-store-pv.yaml
+        oc create -f manifests/nfs-file-store-pvc.yaml
+        ```
 5. Update OpenShift Registry to use NFS
     - OpenShift registry is removed during install, and needs to be set back to PV for image storage
     ```    
@@ -72,3 +72,33 @@ There are number of steps required to be done after the cluster has been sucessf
     ```
     oc create -f manifests/registry-pv.yaml
     ```
+
+## ACE SSO Configuration 
+ACE require User authentication, this can be setup with Azure AD.
+   
+1. In the already create Azure AD App Registration add the ACE redirect URI - `https://#ACD SERVER#/services/redirect_uri`.
+2. Install OpenIDC Module on the HTTPD server
+    ```
+    sudo yum install mod_auth_openidc
+    sudo dnf module enable mod_auth_openidc
+    ```
+  Edit the `/etc/httpd/conf.d/auth_openidc.conf` with the values from Azure AD App:
+
+| Variable                          | Value                                                | 
+| --------------------------------  | -----------------------------------------------------|    
+| OIDCRedirectURI                   | https://172.16.244.208/services/redirect_uri            | 
+| OIDCCryptoPassphrase              | Wats0n          | 
+| OIDCProviderMetadataURL           | https://login.microsoftonline.com/#TENANT_ID#/v2.0/.well-known/openid-configuration |
+| OIDCClientID                      | #APP REG CLIENT ID#                                       | 
+| OIDCClientSecret                  | #USE FOR CREATING APP REG#                                | 
+
+ At the top of the same file add:
+ ```
+   # echo back the claim headers to the client so it knows the user id and email  
+   Header echo ^OIDC_CLAIM_ 
+    
+   <Location /services>
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+```

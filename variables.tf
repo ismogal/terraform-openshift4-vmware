@@ -80,11 +80,17 @@ variable "bootstrap_ip_address" {
   type    = string
   default = ""
 }
-
+variable "bootstrap_name" {
+  type    = string
+  default = "bootstrap"
+}
 ///////////
 // control-plane machine variables
 ///////////
-
+variable "control_plane_name" {
+  type    = string
+  default = "control-plane"
+}
 variable "control_plane_count" {
   type    = string
   default = "3"
@@ -113,7 +119,10 @@ variable "control_plane_disk_size" {
 // compute machine variables
 //////////
 
-
+variable "compute_name" {
+  type    = string
+  default = "compute"
+}
 variable "compute_count" {
   type    = string
   default = "3"
@@ -142,6 +151,10 @@ variable "compute_disk_size" {
 //////////
 // storage machine variables
 //////////
+variable "storage_name" {
+  type    = string
+  default = "storage"
+}
 
 variable "storage_count" {
   type    = string

@@ -57,21 +57,25 @@ terraform apply
 | base_domain                      | Base domain for your OpenShift Cluster                       | string | - |
 | machine_cidr                     | CIDR for your CoreOS VMs in `subnet/mask` format.            | string | - |
 | bootstrap_ip_address             | IP Address for bootstrap node                                | string | - |
+| bootstrap_name                   | Bootstrap hostname/vmname                                    | string | bootstrap |
 | control_plane_ip_addresses       | List of IP addresses for your control plane nodes            | list   | - |
 | control_plane_count              | Number of control plane VMs to create                        | string | 3 |
 | control_plane_memory             | Memory, in MB, to allocate to control plane VMs              | string | 16384 |
 | control_plane_num_cpus           | Number of CPUs to allocate for control plane VMs             | string | 4 |
 | control_plane_disk_size          | Disk Size, in GB, to allocate for control plane VMs          | number | 120 |
+| control_plane_name               | Control Plane hostname/vmname                                | string | control-plane |
 | compute_ip_addresses             | List of IP addresses for your compute nodes                  | list   | - |
 | compute_count                    | Number of compute VMs to create                              | string | 3|
 | compute_memory                   | Memory, in MB, to allocate to compute VMs                    | string | 8192 |
 | compute_num_cpus                 | Number of CPUs to allocate for compute VMs                   | string | 3 |
 | compute_disk_size                | Disk Size, in GB, to allocate for compute VMs                | number | 60 |
+| compute_name                     | Compute hostname/vmname                                      | string | compute |
 | storage_ip_addresses             | List of IP addresses for your storage nodes                   | list | `Empty` |
 | storage_count                    | Number of storage VMs to create                               | string | 0 |
 | storage_memory                   | Memory, in MB to allocate to storage VMs                     | string | 65536 |
 | storage_num_cpus                 | Number of CPUs to allocate for storage VMs                   | string | 16 |
 | storage_disk_size                | Disk Size, in GB, to allocate for storage VMs                | number | 120 |
+| storage_name                     | Storage hostname/vmname                                      | string | storage |
 | openshift_pull_secret            | Path to your OpenShift [pull secret](https://cloud.redhat.com/openshift/install/vsphere/user-provisioned) | string | -                |
 | openshift_cluster_cidr           | CIDR for pods in the OpenShift SDN                           | string | 10.128.0.0/14 |
 | openshift_service_cidr           | CIDR for services in the OpenShift SDN                       | string | 172.30.0.0/16 |
