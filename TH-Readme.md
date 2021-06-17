@@ -2,12 +2,13 @@
 Install the supporting tools on to the Bastion host required for the OpenShift install and config. 
 ```
 sudo yum install -y git
+sudo yum install -y jq
+sudo yum install -y wget
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 sudo yum install -y terraform
 sudo curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-sudo yum install -y jq
-sudo yum install -y wget
+
 
 # extract govc binary to /usr/local/bin
 # note: the "tar" command must run with root permissions
@@ -20,9 +21,9 @@ curl -L -o - "https://mirror.openshift.com/pub/openshift-v4/$(uname -m)/clients/
 
 ```
 ## OpenShift 4.7 User-Provided Infrastructure
-Follow the Installation process from the main README.md
+Follow the Installation process from the main [README.md](https://github.com/ismogal/terraform-openshift4-vmware#openshift-46-upi-deployment-with-static-ips)
 
-The terraform.tfvars has been update to close to TH variables
+The terraform.tfvars variables have been updated to relevant TH values.
 
 ## Post-Install Configuration 
 There are number of steps required to be done after the cluster has been sucessfully setup. 
@@ -48,15 +49,28 @@ There are number of steps required to be done after the cluster has been sucessf
     ```
     oc edit console.config.openshift.io cluster
     spec:
-    authentication:
-    logoutRedirect: https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://console-openshift-console.apps.thupi.im.ocp
+      authentication:
+        logoutRedirect: https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=https://console-openshift-console.apps.thupi.im.ocp
     ```
-    [Logout-Ref-Doc] https://docs.openshift.com/container-platform/4.7/web_console/configuring-web-console.html
+    [Logout-Ref-Doc](https://docs.openshift.com/container-platform/4.7/web_console/configuring-web-console.html)
 
-4. Configure NFS PV/PVC
+4. Add admin user and remove kube:admin
+    - Login as kubeadmin and make the TH user admin to the cluster 
+    ```
+    export KUBECONFIG=<ocp install dir>/auth/kubeconfig
+    oc login
+    oc adm policy add-cluster-role-to-user cluster-admin <th_user>
+    ```
+    - Remove / disable the kube:admin user (after sucessfully login using the assigned admin user)
+    ```
+    oc delete secrets kubeadmin -n kube-system
+    ```
+    Note: Once kube:admin is removed this cant be undo [read this carefully.](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.7/html/post-installation_configuration/post-install-preparing-for-users#removing-kubeadmin_post-install-preparing-for-users)
+
+5. Configure NFS PV/PVC
     - Provision the NFS server 
         TH will provision the NFS server and provide IP and MountPoints. 
-    
+
     - Create mount point and export
         TH will create mount point for /registry and /acd and exports.
         
@@ -65,7 +79,7 @@ There are number of steps required to be done after the cluster has been sucessf
         oc create -f manifests/nfs-file-store-pv.yaml
         oc create -f manifests/nfs-file-store-pvc.yaml
         ```
-5. Update OpenShift Registry to use NFS
+6. Update OpenShift Registry to use NFS
     - OpenShift registry is removed during install, and needs to be set back to PV for image storage
     ```    
     oc edit configs.imageregistry.operator.openshift.io

@@ -1,0 +1,124 @@
+// ID identifying the cluster to create. Use your username so that resources created can be tracked back to you.
+cluster_id = "thhstlrhos01"
+
+// Version of OpenShift to install. 4.6 or later
+openshift_version = "4.7.16"
+ 
+// Base domain from which the cluster domain is a subdomain.
+base_domain = "emerging.com.au"
+
+// Name of the vSphere server. The dev cluster is on "vcsa.vmware.devcluster.openshift.com".
+vsphere_server = "es-stl-vc001.emerging.com.au"
+
+// User on the vSphere server. 
+vsphere_user = "es\\svc_openshift_vsphere"
+
+// Password of the user on the vSphere server.
+vsphere_password = "#vCenter Password#"
+
+// Name of the vSphere cluster. The dev cluster is "devel".
+vsphere_cluster = "ES-DC-STL"
+
+// Name of the vSphere data center. The dev cluster is "dc1".
+vsphere_datacenter = "ES St Leonards DC"
+
+// Name of the vSphere data store to use for the VMs. The dev cluster uses "nvme-ds1".
+vsphere_datastore = "SAN02_SSD02"
+
+// Name of the RHCOS VM template to clone to create VMs for the cluster
+vm_template = "rhcos-4.7.7-x86_64-vmware.x86_64"
+
+// Name of the VM Network for your cluster nodes
+vm_network = "DMZ_nlp_lan_1001"
+
+//If false, creates a top-level folder with the name from vsphere_folder.
+vsphere_preexisting_folder = true
+
+//The relative path to the folder which should be used or created for VMs.
+vsphere_folder = "Infrastructure/OpenShift" 
+
+// The resource pool that should be used or created for VMs
+vsphere_resource_pool = "#VM Resource pool#"
+
+// If false, creates a resource pool for OpenShift nodes
+vsphere_preexisting_resourcepool = true
+
+// Name of the VM Network for loadbalancer NIC in loadbalancer.
+// loadbalancer_network = "vDPortGroup"
+
+// The machine_cidr where IP addresses will be assigned for cluster nodes.
+// Additionally, IPAM will assign IPs based on the network ID. 
+machine_cidr = "10.9.40.0/24"
+
+// The number of control plane VMs to create. Default is 3.
+control_plane_count = 3
+
+// Disk Size, in GB, to allocate for control plane VMs
+control_plane_disk_size = 200
+
+// Control Plane Host/VMs name
+control_plane_name = "thhrhoscn"
+
+// The number of compute VMs to create. Default is 3.
+compute_count = 3
+
+// Disk Size, in GB, to allocate for compute VMs
+compute_disk_size = 350
+
+// Memory, in MB, to allocate to compute VMs
+compute_memory = 65536
+
+// Number of CPUs to allocate for compute VMs
+compute_num_cpus = 8
+
+// Compute Host/VMs name
+compute_name = "thhrhoscm"
+
+// Set bootstrap_ip, control_plane_ip, and compute_ip if you want to use static
+// IPs reserved someone else, rather than the IPAM server.
+
+// The IP address to assign to the bootstrap VM.
+bootstrap_ip_address = "10.9.40.4"
+
+// Bootstrap Host/VM name
+bootstrap_name = "thhrhosboot"
+
+// The IP addresses to assign to the control plane VMs. The length of this list
+// must match the value of control_plane_count.
+control_plane_ip_addresses = ["10.9.40.11", "10.9.40.12", "10.9.40.13"]
+
+// The IP addresses to assign to the compute VMs. The length of this list must
+// match the value of compute_count.
+compute_ip_addresses = ["10.9.40.51", "10.9.40.52", "10.9.40.53"]
+
+// The IP addresses of your DNS servers for your OpenShift nodes
+vm_dns_addresses = ["10.8.2.11","10.8.2.12"]
+
+// The IP address of the default gateway.  If not set, it will use the frist host of the machine_cidr range.
+vm_gateway = "10.9.40.2"
+
+// Path to your OpenShift Pull Secret
+openshift_pull_secret = "~/.pull-secret"
+
+// Set to true (default) so that OpenShift self-hosts its own LoadBalancers (similar to IPI deployments)
+// If set to false, you must bring your own LoadBalancers and point the api enpoint to masters and apps endpoint to workers
+create_openshift_vips = true
+
+// If create_openshift_vips is set to true, you must provide the IP addresses that will be used for the api and *.apps endpoints
+// These IP addresses MUST be on the same CIDR range as machine_cidr
+openshift_api_virtualip = "10.9.30.40"
+openshift_ingress_virtualip = "10.9.30.41"
+
+// The number of storage VMs to create. Default is 0.  Set to 0 or 3
+// storage_count = 3
+
+
+// The IP addresses to assign to the storage VMs. The length of this list must
+// match the value of storage_count.
+// storage_ip_addresses = ["10.14.120.90", "10.14.120.91", "10.14.120.92"]
+
+// Set MTU for worker VMs
+openshift_worker_mtu = 9000
+
+// Set NTP server
+openshift_ntp_server = "ntp.emerging.com.au"
