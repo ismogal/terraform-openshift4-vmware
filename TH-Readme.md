@@ -25,26 +25,35 @@ Follow the Installation process from the main [README.md](https://github.com/ism
 
 The terraform.tfvars variables have been updated to relevant TH values.
 
+Once the Terraform apply is completed, the OCP bootstrapping and install will be started. 
+To monitor the bootstappping has been completed, run the following command from install dir:
+```
+openshift-install wait-for bootstrap-complete --log-level debug
+```
+
+Once bootstrapping has been completed(about 20 mins), run the following command to monitor the install process(about 40 mins+):
+```
+openshift-install wait-for install-complete --log-level debug
+```
 ## Post-Install Configuration 
 There are number of steps required to be done after the cluster has been sucessfully setup. 
 
-1. Configure htpasswd file for Auth
-    TH needs to create the App Registration and assign permissions.
+1. Configure htpasswd file for Auth:
+    - Create couple of users using htpasswd:
+        First user:
+        ```
+        htpasswd -c -B -b </path/to/users.htpasswd> <user_name> <password>
+        ```
+        Further users:
+        ```
+        htpasswd -B -b </path/to/users.htpasswd> <user_name> <password>
+        ```
+    - Login as kube:admin, Goto Administration -> Cluster Settings -> Global Configuration tab
+    - Click on Oauth. Under the Identitiy Providers click Add and select HTPasswd, browser and select the created HTPasswd file and save. 
 
-    Can be done using Azure AZ CLI or GUI:
-    ```
-    az ad app create --display-name thupi-ad --homepage https://console-openshift-console.apps.thupi.im.ocp --reply-urls https://oauth-openshift.apps.thupi.im.ocp/oauth2callback/azureAD --identifier-uris https://console-openshift-console.apps.thupi.im.ocp --password '#PASSWORD#'
-    ```
-    - Add AZ Graph API permission and Grant Admin Consent.
+2. Configure Active Dirctor for Auth:
+    Reffer to following guide [Configure LDAP](https://docs.openshift.com/container-platform/4.7/authentication/identity_providers/configuring-ldap-identity-provider.html)
 
-
-2. Configure Azure AD for Auth 
-    Can be done using oc or console:
-    - Goto Cluster settings and oAuth, add a new oAuth type and update with - azure-ad-auth.yaml. 
-    - oc CLI method
-    ```
-    oc create secret generic openid-client-secret-azuread -n openshift-config --from-literal=clientSecret=#PASSWORD#
-    ```
 3. Configure the logout URL in OpenShift to properly logout the SSO:
     ```
     oc edit console.config.openshift.io cluster
